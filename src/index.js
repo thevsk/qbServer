@@ -1,24 +1,23 @@
 const fs = require('fs');
 const http = require('http');
 
-let config, host = '0.0.0.0', port = 7900, server;
+let host = '0.0.0.0', port = 7900, server;
 
-let init = () => {
+let loadConfig = () => {
     try {
-        config = fs.readFileSync(`${__dirname}/resources/config.json`);
-        config = JSON.parse(config);
+        let config = JSON.parse(fs.readFileSync(`${__dirname}/resources/config.json`));
         host = config.host;
         port = config.port;
     } catch (e) {
         console.log(`read config.json fail`);
     }
-    
+}
+
+let init = () => {
     let onMessage = data => {
         console.log(data);
-    }
-    
+    };
     server = http.createServer();
-    
     server.on('request', (req, res) => {
         console.log(req.headers);
         let data = [];
@@ -31,7 +30,9 @@ let init = () => {
             res.end();
         });
     });
-    
+}
+
+let start = () => {
     server.listen({
         host: host,
         port: port
@@ -40,4 +41,6 @@ let init = () => {
     });
 }
 
+loadConfig();
 init();
+start();
