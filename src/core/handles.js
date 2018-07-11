@@ -1,10 +1,12 @@
 const fs = require('fs');
+const config = require('./../config');
+const botApi = require('./botApi');
 
 class Handles {
     constructor() {
         this.path = {
-            sudo: `${__dirname}/../handle/sudo/`,
-            default: `${__dirname}/../handle/default/`
+            code: `${config.handle.path.code}/`,
+            default: `${config.handle.path.default}/`
         };
         this.handles = {};
     }
@@ -15,15 +17,22 @@ class Handles {
             let _ = handleName.substring(0, handleName.indexOf('.'));
             this.handles[_] = require(`${this.path.default}${_}`);
         });
-        let sudoHandles = fs.readdirSync(this.path.sudo);
-        sudoHandles.forEach(handleName => {
-            this.update(handleName);
+        let codeHandles = fs.readdirSync(this.path.code);
+        codeHandles.forEach(handleName => {
+            try {
+                this.update(handleName);
+            } catch (e) {
+                botApi.send(botApi.api.sendPrivateMsg, {
+                    user_id: config.masterId,
+                    message: `加载文件 ${handleName} 失败,错误 ${e}`
+                })
+            }
         });
     }
 
     update(handleName) {
         let _ = handleName.substring(0, handleName.indexOf('.'));
-        this.handles[_] = require(`${this.path.sudo}${_}`);
+        this.handles[_] = require(`${this.path.code}${_}`);
     }
 
     delete(handleName) {

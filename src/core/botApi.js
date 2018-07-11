@@ -44,6 +44,23 @@ class BotApi {
         return result;
     }
 
+    reply(body, message) {
+        if (typeof(body.message_type) === 'string') {
+            this.send(this.api.sendMsg, {
+                message_type: body.message_type,
+                user_id: body.user_id,
+                group_id: body.group_id,
+                discuss_id: body.discuss_id,
+                message: message
+            });
+        } else if (typeof(body.group_id) !== 'undefined') {
+            this.send(this.api.sendGroupMsg, {
+                group_id: body.group_id,
+                message: message
+            });
+        }
+    }
+
     send() {
         let url, data, callback, options;
         url = arguments[0];

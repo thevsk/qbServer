@@ -1,9 +1,10 @@
 const fs = require('fs');
 const handles = require('./handles');
+const config = require('./../config');
 
 class HandlesEdit {
     constructor() {
-        this.path = `${__dirname}/../handle/sudo/`;
+        this.path = `${config.handle.path.code}/`;
     }
 
     exists(handleName) {
@@ -12,6 +13,12 @@ class HandlesEdit {
 
     write(text, handleName) {
         fs.writeFileSync(`${this.path}${handleName}.js`, text, {
+            encoding: 'utf8'
+        });
+    }
+
+    read(handleName) {
+        return fs.readFileSync(`${this.path}${handleName}.js`, {
             encoding: 'utf8'
         });
     }
@@ -29,6 +36,7 @@ class HandlesEdit {
 
     delete(handleName) {
         handles.delete(`${handleName}.js`);
+        fs.unlinkSync(`${this.path}${handleName}.js`);
     }
 }
 

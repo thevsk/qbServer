@@ -1,19 +1,27 @@
 const http = require('http');
 const botApi = require('./core/botApi');
 const handles = require('./core/handles');
+const config = require('./config');
 
 let host, port, server;
 
 let loadConfig = () => {
-    host = '0.0.0.0';
-    port = 7900;
+    host = config.server.host;
+    port = config.server.port;
 }
 
 let init = () => {
     let onMessage = data => {
         console.log(data);
         for (let key in handles.handles) {
-            handles.handles[key](JSON.parse(data), botApi);
+            try {
+                handles.handles[key](JSON.parse(data), botApi);
+            } catch (e) {
+                botApi.send(botApi.api.sendPrivateMsg, {
+                    user_id: config.masterId,
+                    message: `执行函数 ${key} 失败，错误：${e} , 函数内容：\r\n${handles.handles[key]}`
+                });
+            }
         }
     };
     server = http.createServer();
@@ -37,8 +45,8 @@ let start = () => {
         port: port
     }, () => {
         botApi.send(botApi.api.sendPrivateMsg, {
-            user_id: 2522534416,
-            message: `启动成功，端口 => ${port}`
+            user_id: config.masterId,
+            message: `监听服务启动成功，端口 => ${port}`
         });
     });
 }
