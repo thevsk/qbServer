@@ -4,6 +4,8 @@ module.exports = (body, botApi) => {
     if (body.post_type !== 'message') return;
     if (typeof(body.message) !== 'string') return;
     if (!body.message.startsWith('!delete')) return;
+    if (typeof(body.user_id) !== 'number') return;
+    if (body.user_id !== config.masterId) return;
     let handleName = body.message.replace('!delete', '').trim();
     try {
         if (handlesEdit.exists(handleName)) {

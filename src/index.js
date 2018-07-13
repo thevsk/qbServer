@@ -19,7 +19,7 @@ let init = () => {
             } catch (e) {
                 botApi.send(botApi.api.sendPrivateMsg, {
                     user_id: config.masterId,
-                    message: `执行函数 ${key} 失败，错误：${e} , 函数内容：\r\n${handles.handles[key]}`
+                    message: `执行函数 ${key} 失败，错误：${e}`
                 });
             }
         }
