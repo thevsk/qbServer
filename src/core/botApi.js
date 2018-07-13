@@ -1,9 +1,10 @@
 const httpRequest = require('request');
+const config = require('./../config');
 
 class BotApi {
     constructor() {
-        this.url = 'http://127.0.0.1:5700/';
-        this.token = 'thevsk';
+        this.url = config.api.url;
+        this.token = config.api.token;
         this.api = {
             sendPrivateMsg: "send_private_msg",
             sendGroupMsg: "send_group_msg",
